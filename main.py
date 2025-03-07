@@ -9,12 +9,10 @@ import pandas as pd
 from tqdm import tqdm
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
+import pickle
 
 # Read the movies_metadata file
 movies_metadata = pd.read_csv('movies_metadata.csv')
-
-# Read the ratings file
-ratings = pd.read_csv('ratings.csv')
 
 # Load a pre-trained model from Sentence Transformers
 model = SentenceTransformer('all-MiniLM-L6-v2')
@@ -38,8 +36,14 @@ def recommend_movies(user_input, movies_metadata, model, top_n=5):
     
     return top_movies[['title', 'overview', 'similarity']]
 
+with open("model.pkl", "wb") as file:
+    pickle.dump(model, file)
+
+with open("movies_metadata.pkl", "wb") as file:
+    pickle.dump(movies_metadata, file)
+
 # Example usage
 user_input = "A story about a young wizard who discovers his magical heritage."
 top_n = 5
 recommended_movies = recommend_movies(user_input, movies_metadata, model, top_n)
-recommended_movies
+print(recommended_movies)
